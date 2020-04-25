@@ -5,7 +5,6 @@
  */
 package ru.hiik.websocketserver;
 
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;

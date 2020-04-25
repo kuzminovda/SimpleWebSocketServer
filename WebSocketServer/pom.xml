@@ -54,6 +54,11 @@
             <scope>provided</scope>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>EntityCore</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
