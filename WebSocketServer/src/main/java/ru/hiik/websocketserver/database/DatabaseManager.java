@@ -6,6 +6,11 @@
 package ru.hiik.websocketserver.database;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import static javax.transaction.Transactional.TxType.REQUIRED;
+import ru.hiik.entitycore.entity.student.Student;
 
 /**
  *
@@ -15,16 +20,14 @@ import javax.enterprise.context.ApplicationScoped;
 public class DatabaseManager
 {
     
-    // Менеджер сущностей
-    /*
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
     private EntityManager em;
     
-    
+    @Transactional(REQUIRED)
     public void saveStudent(Student student)
     {
          em.persist(student);
     }     
-    */
+   
     
 }

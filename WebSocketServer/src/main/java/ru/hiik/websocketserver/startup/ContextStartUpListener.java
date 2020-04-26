@@ -32,7 +32,7 @@ public class ContextStartUpListener  implements ServletContextListener
            
         LOG.log(Level.INFO, "Старт сервера... ");
   
-        /*
+       
         
         Student st = new Student();
         st.setFirstName("Олег");
@@ -40,8 +40,7 @@ public class ContextStartUpListener  implements ServletContextListener
         st.setYearOfstudy(1);
         
         databaseManager.saveStudent(st);
-        */
-        
+               
         LOG.log(Level.INFO, "Сервер стартовал");
         
     }
