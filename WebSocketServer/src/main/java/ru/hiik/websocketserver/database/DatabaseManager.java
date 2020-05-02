@@ -9,13 +9,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import static javax.transaction.Transactional.TxType.REQUIRED;
+import javax.transaction.Transactional.TxType;
 import ru.hiik.entitycore.entity.student.Student;
 
 /**
  *
  * @author vaganovdv
  */
+
 @ApplicationScoped
 public class DatabaseManager
 {
@@ -23,7 +24,7 @@ public class DatabaseManager
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
     private EntityManager em;
     
-    @Transactional(REQUIRED)
+    @Transactional(value=TxType.REQUIRED)
     public void saveStudent(Student student)
     {
          em.persist(student);
