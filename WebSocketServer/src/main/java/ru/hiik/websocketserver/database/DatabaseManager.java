@@ -117,7 +117,7 @@ public class DatabaseManager
             packet.setType(String.class.getCanonicalName());
             packet.setCommand("Ошибка");
             packet.setBody("Ошибка удаления студента {"+student.toString()+"} , описание ошибки: {"+ex.toString()+"}");
-            this.webSocketServer.sendPacket(packet);
+            webSocketServer.sendPacket(packet);
             
             LOG.log(Level.WARNING, "Ошибка удаления - неверные агрументы: " + ex.toString());
         }

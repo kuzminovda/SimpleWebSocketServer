@@ -106,9 +106,11 @@ public class WebSocketServer
      */
     public void sendPacket(Packet packet)
     {
+        LOG.log(Level.INFO, "Отправка пакета...");
         if (packet != null)
         {
             String json = gson.toJson(packet);
+            
             if (json != null && !json.isEmpty())
             {
                 users.values().forEach(s ->
@@ -116,6 +118,7 @@ public class WebSocketServer
                     try
                     {
                         s.getBasicRemote().sendText(json);
+                        LOG.log(Level.INFO, "Отправлен пакет: {"+json+"}");
                     } catch (IOException ex)
                     {
                         LOG.log(Level.SEVERE, "Ошибка отправки пакета: {"+ex.toString()+"}");
