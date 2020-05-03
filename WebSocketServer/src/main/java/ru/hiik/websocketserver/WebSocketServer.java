@@ -5,17 +5,21 @@
  */
 package ru.hiik.websocketserver;
 
+import com.google.gson.Gson;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import ru.hiik.entitycore.packet.Packet;
 
 /**
  *
@@ -46,8 +50,10 @@ public class WebSocketServer
     //                              ключ  значение   имя структуры   может использоваться в режиме работы нескольких нитей
     //                               |      |        |               /
     private static ConcurrentMap <String, Session> users = new ConcurrentHashMap<String, Session>();
+    private Gson gson = new Gson();
     
-    
+    @Inject 
+    private PacketProcessor packetProcessor;
     
     // Событие OnOpen возникает в случае подключения к серверу клиента
     // и создания новой  сессии с уникальным идентификатором
@@ -68,9 +74,7 @@ public class WebSocketServer
     @OnClose
     public void onClose(Session session)
     {
-
         users.remove(session.getId().toUpperCase());
-
     }
 
     @OnError
@@ -90,6 +94,38 @@ public class WebSocketServer
     public void onMessage(String message, Session session)
     {
         LOG.log(Level.INFO,"Получено сообщение от клиента: " + message);
+        if (message != null)
+        {
+            // Вызов функции обработки пакета 
+            packetProcessor.processPacket(message);
+        }   
     }
+    
+    /**
+     * Посылка пакета 
+     */
+    public void sendPacket(Packet packet)
+    {
+        if (packet != null)
+        {
+            String json = gson.toJson(packet);
+            if (json != null && !json.isEmpty())
+            {
+                users.values().forEach(s ->
+                {
+                    try
+                    {
+                        s.getBasicRemote().sendText(json);
+                    } catch (IOException ex)
+                    {
+                        LOG.log(Level.SEVERE, "Ошибка отправки пакета: {"+ex.toString()+"}");
+                    }
+
+                });
+            }
+        }
+    }        
+    
+    
     
 }
