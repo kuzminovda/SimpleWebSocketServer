@@ -39,7 +39,8 @@ public class ContextStartUpListener  implements ServletContextListener
         st.setLastName("Иванов");
         st.setYearOfstudy(1);
         
-        databaseManager.saveStudent(st);
+        Student student = databaseManager.saveStudent(st);
+        LOG.log(Level.INFO, "Сохранен студент в БД, идентификатор {"+student.getId()+"}");
                
         LOG.log(Level.INFO, "Сервер стартовал");
         
@@ -49,7 +50,18 @@ public class ContextStartUpListener  implements ServletContextListener
     public void contextDestroyed(ServletContextEvent sce)
     {
         LOG.log(Level.INFO, "Остановка сервера... ");
-  
+        
+        Student st = new Student();
+        st.setId(1L);
+        st.setFirstName("Алексей");
+        st.setLastName("Иванов");
+        st.setYearOfstudy(1);
+     
+        databaseManager.updateStudent(st);
+        
+        
+        
+        
         LOG.log(Level.INFO, "Сервер остановлен");
     }
     
