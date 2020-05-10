@@ -30,6 +30,10 @@ public class DatabaseManager
 
     private static final Logger LOG = Logger.getLogger(DatabaseManager.class.getSimpleName());
     
+    
+    // Настройка подключения к серверу через строку 
+    // persistence-unit  и параметр Name 
+    // 
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
     private EntityManager em;
     
