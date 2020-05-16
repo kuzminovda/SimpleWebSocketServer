@@ -37,6 +37,7 @@ public class DatabaseManager
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
     private EntityManager em;
     
+    
     @Inject
     private WebSocketServer webSocketServer;
     
@@ -49,12 +50,11 @@ public class DatabaseManager
     public Packet processStudent(Student student, String command)
     {
        Packet responcePacket = new Packet();
-       LOG.log(Level.SEVERE, "Обработка команды в БД: {"+command+"}");
+       LOG.log(Level.INFO, "Обработка команды в БД: {"+command+"}");
        
        switch (command)
        {
            case "Удаление из БД": deleteStudent(student); break;
-           
            default: 
            {
                LOG.log(Level.SEVERE, "Неопознанная команда: {"+command+"}");
@@ -66,27 +66,55 @@ public class DatabaseManager
     
     
     
-    
+    /**
+     * Сохранение экземпляра класса Student в базе данных 
+     * @param student  готовый (не нулевой) экземпляр класса Student
+     * @return 
+     */
     @Transactional(value=TxType.REQUIRED)
+    
     public Student saveStudent(Student student)
     {
-        em.persist(student);
-        em.flush();
+        
+        em.persist(student);    // Сохраняет экземпляр в базе данных
+        // После операции persist экземляр Student становится "привязанным" к таблице 
+        //базы данных, что означает - любое изменение свойств экземпляра сразу 
+        // приводят к измнению соответсвующих столбцов в таблице
+        
+        em.flush();             // Сохраняет изменения экземпляра на диске    
         return student; 
          
     }     
    
-    @Transactional(value=TxType.REQUIRED)
+    
+        /**
+     * Обновление экземпляра студента в БД
+     *
+     * @param student студен, обновляемый в БД
+     * @return
+     */
+    @Transactional(value = TxType.REQUIRES_NEW)
     public Student updateStudent(Student student)
     {
-    
-        Student  foundStudent = em.find(Student.class, student.getId());
-        
+
+        Student foundStudent = null;
         try
         {
+            //
+            //                        название класса        уникальный идентификатор
+            //                                   |            /
+            foundStudent = em.find(Student.class, student.getId());
+            // !!! экземпляр foundStudent статовится привязанным к таблице 
+
+            // 
+            // BeanUtils меняет свойиства у foundStudent и поскольку foundStudent
+            // привязан к БД, то любое изменение свойств сразу меняет записи в 
+            // таблице Student 
+            //
+            
             BeanUtils.copyProperties(foundStudent, student);
             em.flush();
-            
+
         } catch (IllegalAccessException ex)
         {
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,7 +123,7 @@ public class DatabaseManager
             Logger.getLogger(DatabaseManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         return foundStudent;
-    }    
+    }
 
     
     
