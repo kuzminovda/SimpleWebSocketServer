@@ -89,12 +89,12 @@ public class WebSocketServer
      OnMessage - обработка события получения сервером сообщения от клиента
     */
     @OnMessage
-    //                         сообщение       экземпляр класса сессии с клиентом
+    //                сообщение от клиента       экземпляр класса сессии с клиентом
     //                             |           /
     public void onMessage(String message, Session session)
     {
         LOG.log(Level.INFO,"Получено сообщение от клиента: " + message);
-        if (message != null)
+        if (message != null )
         {
             // Вызов функции обработки пакета 
             packetProcessor.processPacket(message);

@@ -35,13 +35,15 @@ public class PacketProcessor
      *
      * @param inputJson
      * @return
-     */
+     */     
+    //                                    |
     public Packet processPacket(String inputJson)
     {
-        Packet responcePacket = new Packet();  //Создание пустого ответного пакета
-        Packet inputPacket = null;
+        Packet responcePacket = new Packet();  // Создание пустого ответного пакета
+        Packet inputPacket = null;             // Создание входного пусто пакета
         try
         {
+            
             inputPacket = gson.fromJson(inputJson, Packet.class);
             if (inputPacket != null)
             {
