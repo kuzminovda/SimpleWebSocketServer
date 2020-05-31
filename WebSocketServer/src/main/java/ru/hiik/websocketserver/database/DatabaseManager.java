@@ -54,7 +54,8 @@ public class DatabaseManager
        
        switch (command)
        {
-           case "Удаление из БД": deleteStudent(student); break;
+           case "Удаление из БД": deleteStudent(student);   break;
+           case "Добавть в БД":  this.saveStudent(student);
            default: 
            {
                LOG.log(Level.SEVERE, "Неопознанная команда: {"+command+"}");

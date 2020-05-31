@@ -139,6 +139,8 @@ public class PacketProcessor
             {
                 case "ru.hiik.entitycore.entity.student.Student":
                 {
+                    
+                    // Из поля Body извлекается экземпляр класса Student
                     Student student = gson.fromJson(packet.getBody(), Student.class);
                     if (student != null)
                     {
