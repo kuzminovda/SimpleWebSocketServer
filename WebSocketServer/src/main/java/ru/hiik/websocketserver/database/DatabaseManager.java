@@ -10,8 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import org.apache.commons.beanutils.BeanUtils;
@@ -47,6 +49,7 @@ public class DatabaseManager
      * 
      * @return 
      */
+    @Transactional(value = TxType.REQUIRED)
     public Packet processStudent(Student student, String command)
     {
        Packet responcePacket = new Packet();
@@ -73,21 +76,43 @@ public class DatabaseManager
      * @param student  готовый (не нулевой) экземпляр класса Student
      * @return 
      */
-    @Transactional(value=TxType.REQUIRED) 
+    @Transactional(value = TxType.REQUIRED)
     public Student saveStudent(Student student)
     {
-        
-        LOG.log(Level.INFO, "Запись в таблице: {"+student.toString()+"}");
-        em.persist(student);    // Сохраняет экземпляр в базе данных
-        // После операции persist экземляр Student становится "привязанным" к таблице 
-        //базы данных, что означает - любое изменение свойств экземпляра сразу 
-        // приводят к измнению соответсвующих столбцов в таблице
-        
-        em.flush();             // Сохраняет изменения экземпляра на диске    
-        LOG.log(Level.INFO, "Студен записан в таблицу : {"+student.getId()+"}");
-        return student; 
-         
-    }     
+
+        LOG.log(Level.INFO, "Сохранение студента...");
+        if (student != null)
+        {
+            try
+            {
+                em.persist(student);    // Сохраняет экземпляр в базе данных
+                // После операции persist экземляр Student становится "привязанным" к таблице 
+                //базы данных, что означает - любое изменение свойств экземпляра сразу 
+                // приводят к измнению соответсвующих столбцов в таблице
+                LOG.log(Level.INFO, "Операция записи завершена");
+                em.flush();             // Сохраняет изменения экземпляра на диске    
+            } catch (EntityExistsException ex)
+            {
+                LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
+            } catch (IllegalArgumentException ex)
+            {
+                LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
+
+            } catch (TransactionRequiredException ex)
+            {
+                LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
+
+            }
+
+            LOG.log(Level.INFO, "Студен записан в таблицу");
+        } else
+        {
+            LOG.log(Level.SEVERE, "Ошибка сохранения студента - экземпляр класса пустой");
+        }
+
+        return student;
+
+    }
    
     
         /**
@@ -137,6 +162,7 @@ public class DatabaseManager
         try
         {
             Student foundStudent = em.find(Student.class, student.getId());
+            
             if (foundStudent != null)
             {
                 em.remove(foundStudent);

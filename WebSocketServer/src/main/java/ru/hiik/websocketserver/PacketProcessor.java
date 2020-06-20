@@ -114,7 +114,7 @@ public class PacketProcessor
                             opt = Optional.of(packet);
                         } else
                         {
-
+                            LOG.log(Level.SEVERE, "Ошибка извлечения класса {"+packet.getType()+"}");
                         }
                     }
                 } catch (ClassNotFoundException ex)
