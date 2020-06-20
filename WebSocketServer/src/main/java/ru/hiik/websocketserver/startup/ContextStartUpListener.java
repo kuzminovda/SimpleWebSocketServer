@@ -30,6 +30,11 @@ public class ContextStartUpListener  implements ServletContextListener
     @Inject
     private DatabaseManager databaseManager;
     
+    
+    /**
+     * Метод, выполняющий действия при старте сервера
+     * @param sce 
+     */
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
@@ -52,6 +57,7 @@ public class ContextStartUpListener  implements ServletContextListener
         
         
         // Сохранение сфорсмированных экземпляров в БД
+        // Обращение к класу {databaseManager} для сохранения студентов в БД
         Student student1 = databaseManager.saveStudent(st1);
         Student student2 = databaseManager.saveStudent(st2);
         
@@ -69,23 +75,21 @@ public class ContextStartUpListener  implements ServletContextListener
     
     
     
-    
+    /**
+     * Метод, выполняющийся при остановке сервера
+     * @param sce 
+     */
      @Override
     public void contextDestroyed(ServletContextEvent sce)
     {
         LOG.log(Level.INFO, "Остановка сервера... ");
       
-        
-       
-
+        // Обновление поля {FirstName} у экземпляра st1
         st1.setFirstName("Алексей");
         st1.setLastName("Иванов");
         st1.setYearOfstudy(1);
-     
+        
         databaseManager.updateStudent(st1);
-        
-        
-        
         
         LOG.log(Level.INFO, "Сервер остановлен");
     }

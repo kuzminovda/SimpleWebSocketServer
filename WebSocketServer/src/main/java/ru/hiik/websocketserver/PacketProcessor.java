@@ -35,7 +35,8 @@ public class PacketProcessor
      *
      * @param inputJson
      * @return
-     */     
+     */    
+    //                               строка, полученная от  WebSocketServer              
     //                                    |
     public Packet processPacket(String inputJson)
     {
@@ -44,14 +45,18 @@ public class PacketProcessor
         try
         {
             
+            // Восстановливает класс Packet из строки
             inputPacket = gson.fromJson(inputJson, Packet.class);
             if (inputPacket != null)
             {
+                // Извлекаем класс Student из поля body Packet
                 if (extractCommand(inputPacket).isPresent())
                 {
                     Optional<Packet> opt = extractClass(inputPacket);
                     if (opt.isPresent())
                     {
+                        // Передача экземпляра класса Packet на обработку 
+                        //
                         routePacket(opt.get());
                     }
                 }
@@ -145,6 +150,8 @@ public class PacketProcessor
                     if (student != null)
                     {
                         LOG.log(Level.INFO, "Извлечен экземпляр {Student}: " + student.toString());
+                        //                 экземпляр класса Student    передача команды менеждеру databaseManager 
+                        //                               |              |
                         databaseManager.processStudent(student, packet.getCommand());
                     }
                 }

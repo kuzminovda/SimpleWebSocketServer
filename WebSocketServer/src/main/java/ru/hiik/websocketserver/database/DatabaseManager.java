@@ -54,8 +54,9 @@ public class DatabaseManager
        
        switch (command)
        {
-           case "Удаление из БД": deleteStudent(student);   break;
-           case "Добавть в БД":  this.saveStudent(student);
+           case "Удаление из БД":            deleteStudent(student);    break;
+           case "Добавление студента в БД":  saveStudent(student);      break;
+           
            default: 
            {
                LOG.log(Level.SEVERE, "Неопознанная команда: {"+command+"}");
@@ -72,17 +73,18 @@ public class DatabaseManager
      * @param student  готовый (не нулевой) экземпляр класса Student
      * @return 
      */
-    @Transactional(value=TxType.REQUIRED)
-    
+    @Transactional(value=TxType.REQUIRED) 
     public Student saveStudent(Student student)
     {
         
+        LOG.log(Level.INFO, "Запись в таблице: {"+student.toString()+"}");
         em.persist(student);    // Сохраняет экземпляр в базе данных
         // После операции persist экземляр Student становится "привязанным" к таблице 
         //базы данных, что означает - любое изменение свойств экземпляра сразу 
         // приводят к измнению соответсвующих столбцов в таблице
         
         em.flush();             // Сохраняет изменения экземпляра на диске    
+        LOG.log(Level.INFO, "Студен записан в таблицу : {"+student.getId()+"}");
         return student; 
          
     }     
@@ -108,7 +110,7 @@ public class DatabaseManager
             // !!! экземпляр foundStudent статовится привязанным к таблице 
 
             // 
-            // BeanUtils меняет свойиства у foundStudent и поскольку foundStudent
+            // BeanUtils меняет свойства у foundStudent и поскольку foundStudent
             // привязан к БД, то любое изменение свойств сразу меняет записи в 
             // таблице Student 
             //
