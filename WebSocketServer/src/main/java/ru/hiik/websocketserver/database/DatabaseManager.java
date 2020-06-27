@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
@@ -47,6 +48,8 @@ public class DatabaseManager
     /**
      * Обработчик пакетов, предназначенных для БД
      * 
+     * @param student
+     * @param command
      * @return 
      */
     @Transactional(value = TxType.REQUIRED)
@@ -77,41 +80,50 @@ public class DatabaseManager
      * @return 
      */
     @Transactional(value = TxType.REQUIRED)
+    
     public Student saveStudent(Student student)
     {
+        // Обнуление экземпляра
+        Student foundStudent = null;
 
-        LOG.log(Level.INFO, "Сохранение студента...");
+        LOG.log(Level.INFO, "Сохранение студента {"+student.toString()+"}");
         if (student != null)
         {
             try
             {
                 em.persist(student);    // Сохраняет экземпляр в базе данных
+                                        // экземляр student становится привязанным к БД     
+                LOG.log(Level.INFO, "Сохранен студент, идентификатор в БД {"+student.getId()+"}");
                 // После операции persist экземляр Student становится "привязанным" к таблице 
                 //базы данных, что означает - любое изменение свойств экземпляра сразу 
                 // приводят к измнению соответсвующих столбцов в таблице
-                LOG.log(Level.INFO, "Операция записи завершена");
-                em.flush();             // Сохраняет изменения экземпляра на диске    
+                em.flush();             // Сохраняет изменения экземпляра на диске 
+                if (student.getId() != null)
+                {
+                    foundStudent = em.find(Student.class, student.getId());
+                    LOG.log(Level.INFO, "Сохранен студент {" + foundStudent.toString() + "}");
+                }
             } catch (EntityExistsException ex)
             {
                 LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
             } catch (IllegalArgumentException ex)
             {
                 LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
-
             } catch (TransactionRequiredException ex)
             {
                 LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
-
             }
-
-            LOG.log(Level.INFO, "Студен записан в таблицу");
+            catch (PersistenceException ex)
+            {
+                LOG.log(Level.SEVERE, "Ошибка: {" + ex.toString() + "}");
+            }
+           
         } else
         {
             LOG.log(Level.SEVERE, "Ошибка сохранения студента - экземпляр класса пустой");
         }
 
-        return student;
-
+        return foundStudent;
     }
    
     
