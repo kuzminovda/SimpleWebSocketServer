@@ -5,6 +5,7 @@
  */
 package ru.hiik.websocketserver.database;
 
+import com.google.gson.Gson;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ public class DatabaseManager
     // 
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
     private EntityManager em;
+    private Gson gson = new Gson();
     
     
     @Inject
@@ -50,18 +52,36 @@ public class DatabaseManager
      * 
      * @param student
      * @param command
-     * @return 
+     * @return  экземпляр класса {Packet}
      */
     @Transactional(value = TxType.REQUIRED)
     public Packet processStudent(Student student, String command)
     {
+       // Форрмирование пакета для клиента  
        Packet responcePacket = new Packet();
        LOG.log(Level.INFO, "Обработка команды в БД: {"+command+"}");
        
        switch (command)
        {
            case "Удаление из БД":            deleteStudent(student);    break;
-           case "Добавление студента в БД":  saveStudent(student);      break;
+           case "Добавление студента в БД": 
+           {
+               Student foundStudent  = saveStudent(student);
+               // Возврат сохранненого экземпляра Student на клиент
+               if (foundStudent != null)
+               {
+                   responcePacket.setCommand(command);
+                   responcePacket.setType(Student.class.getCanonicalName());
+                   String json = gson.toJson(foundStudent);
+                   responcePacket.setBody(json);
+               }    
+               // Возврат на клиент ошибки сохранения
+               else
+               {
+                   responcePacket.setCommand("Ошибка сохранения в БД");
+                   responcePacket.setBody("Экземпляр {Student} не сохранен в БД");
+               }    
+           }break;
            
            default: 
            {
@@ -80,7 +100,6 @@ public class DatabaseManager
      * @return 
      */
     @Transactional(value = TxType.REQUIRED)
-    
     public Student saveStudent(Student student)
     {
         // Обнуление экземпляра

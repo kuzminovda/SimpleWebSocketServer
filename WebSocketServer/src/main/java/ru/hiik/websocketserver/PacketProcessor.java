@@ -29,6 +29,9 @@ public class PacketProcessor
 
     @Inject
     private DatabaseManager databaseManager;
+    @Inject
+    private WebSocketServer webSocketServer;
+    
 
     /**
      * Функция обработки пакетов, поступивших от клиентов
@@ -152,7 +155,9 @@ public class PacketProcessor
                         LOG.log(Level.INFO, "Извлечен экземпляр {Student}: " + student.toString());
                         //                 экземпляр класса Student    передача команды менеждеру databaseManager 
                         //                               |              |
-                        databaseManager.processStudent(student, packet.getCommand());
+                        Packet packetToClient = databaseManager.processStudent(student, packet.getCommand());
+                        // Отправка результата обработки на клиент
+                        this.webSocketServer.sendPacket(packetToClient);
                     }
                 }
                 break;
