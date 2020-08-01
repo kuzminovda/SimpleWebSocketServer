@@ -100,7 +100,7 @@ public class PacketProcessor
      *
      * @param packet
      */
-    private Optional<Packet> extractClass(Packet packet)
+    public  Optional<Packet> extractClass(Packet packet)
     {
         Optional<Packet> opt = Optional.empty();
         if (packet.getType() != null && !packet.getType().isEmpty())
@@ -131,6 +131,10 @@ public class PacketProcessor
         }
         return opt;
     }
+    
+    
+    
+    
 
     /**
      * Функция обработки пакетов
