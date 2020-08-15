@@ -39,7 +39,7 @@ public class DatabaseManager
     // persistence-unit  и параметр Name 
     // 
     @PersistenceContext(unitName = "STUDENT_DATABASE_PU")
-    private EntityManager em;
+    private EntityManager em;          //  Менеджер сущностей
     private Gson gson = new Gson();
     
     
@@ -66,6 +66,7 @@ public class DatabaseManager
            case "Удаление из БД":            deleteStudent(student);    break;
            case "Добавление студента в БД": 
            {
+               // Вызов метода сохранения студента 
                Student foundStudent  = saveStudent(student);
                // Возврат сохранненого экземпляра Student на клиент
                if (foundStudent != null)
@@ -110,7 +111,7 @@ public class DatabaseManager
         {
             try
             {
-                em.persist(student);    // Сохраняет экземпляр в базе данных
+                em.persist(student);    // Сохраняет экземпляр {} в базе данных
                                         // экземляр student становится привязанным к БД     
                 LOG.log(Level.INFO, "Сохранен студент, идентификатор в БД {"+student.getId()+"}");
                 // После операции persist экземляр Student становится "привязанным" к таблице 
@@ -119,6 +120,7 @@ public class DatabaseManager
                 em.flush();             // Сохраняет изменения экземпляра на диске 
                 if (student.getId() != null)
                 {
+                    // Поиск студента, сохраненного в базе данных
                     foundStudent = em.find(Student.class, student.getId());
                     LOG.log(Level.INFO, "Сохранен студент {" + foundStudent.toString() + "}");
                 }

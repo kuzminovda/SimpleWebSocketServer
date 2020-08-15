@@ -137,7 +137,7 @@ public class PacketProcessor
     
 
     /**
-     * Функция обработки пакетов
+     * Функция обработки пакетов (маршрутизация пакета)
      *
      * @param obj
      * @param className
@@ -157,7 +157,7 @@ public class PacketProcessor
                     if (student != null)
                     {
                         LOG.log(Level.INFO, "Извлечен экземпляр {Student}: " + student.toString());
-                        //                 экземпляр класса Student    передача команды менеждеру databaseManager 
+                        //      экземпляр класса  {databaseManager}   передача команды менеждеру databaseManager 
                         //                               |              |
                         Packet packetToClient = databaseManager.processStudent(student, packet.getCommand());
                         // Отправка результата обработки на клиент
