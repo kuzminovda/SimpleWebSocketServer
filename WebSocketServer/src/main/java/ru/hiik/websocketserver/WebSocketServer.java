@@ -7,6 +7,7 @@ package ru.hiik.websocketserver;
 
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.logging.Level;
@@ -19,7 +20,9 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import ru.hiik.entitycore.entity.student.Student;
 import ru.hiik.entitycore.packet.Packet;
+import ru.hiik.websocketserver.database.DatabaseManager;
 
 /**
  *
@@ -55,6 +58,9 @@ public class WebSocketServer
     @Inject 
     private PacketProcessor packetProcessor;
     
+    @Inject 
+    private DatabaseManager databaseManager;
+    
     // Событие OnOpen возникает в случае подключения к серверу клиента
     // и создания новой  сессии с уникальным идентификатором
     @OnOpen
@@ -67,6 +73,27 @@ public class WebSocketServer
         //                     ключ        преобразовать в заглавные   экземпляр класса сессии
         //                      |           /                          /
         users.putIfAbsent(session.getId().toUpperCase(),             session);
+        
+        // Формирование полного списка студентов из БД
+        List<Student> students = databaseManager.getAllStudents();
+        
+        // Формирование и отправка пакета на клиент
+        for (int i = 0; i < students.size(); i++)
+        {
+            // Преобразование Student в JSON
+            String jsonStudent  = gson.toJson(students.get(i));
+            
+            // Формирование пакета для клиента
+            Packet packet = new Packet();
+            packet.setCommand("Обновление списка на клиенте");
+            packet.setType(Student.class.getCanonicalName());
+            packet.setBody(jsonStudent); // Размещение Student в пакет
+         
+            // Преобразование Packet в Json
+            String jsonPacket  = gson.toJson(packet);
+            sendPacket(packet); // Отправка пакета всем клиентам
+        }
+       
     }
 
     
@@ -102,7 +129,7 @@ public class WebSocketServer
     }
     
     /**
-     * Посылка пакета 
+     * Посылка пакета  на клиентв
      */
     public void sendPacket(Packet packet)
     {

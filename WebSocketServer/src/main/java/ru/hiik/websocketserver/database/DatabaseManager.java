@@ -7,6 +7,8 @@ package ru.hiik.websocketserver.database;
 
 import com.google.gson.Gson;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
@@ -63,7 +65,18 @@ public class DatabaseManager
        
        switch (command)
        {
-           case "Удаление из БД":            deleteStudent(student);    break;
+           case "Удаление из БД":       
+           {   
+               Student delStudent = deleteStudent(student);
+               if (delStudent != null)
+               {
+                   responcePacket.setCommand(command);
+                   responcePacket.setType(Student.class.getCanonicalName());
+                   String json = gson.toJson(delStudent);
+                   responcePacket.setBody(json);
+               }   
+           }
+           break;
            case "Добавление студента в БД": 
            {
                // Вызов метода сохранения студента 
@@ -92,6 +105,34 @@ public class DatabaseManager
         
        return responcePacket;
     }        
+    
+    /**
+     * Получение полного списка студентов из БД 
+     * 
+     * @return 
+     */
+    public List<Student> getAllStudents()
+    {
+        // Список студентов из базы данных  (подгтовка пустого списка)
+        List<Student>  foundStudent  = new ArrayList<>();
+        
+        // Запрос JPA                   выбор    экземпляр   "из таблицы"  название таблицы класс Student
+        //                               |       /            /            /                / 
+        foundStudent = em.createQuery("Select student       from       Student student", Student.class)
+                      .getResultList();
+        
+        if (foundStudent.size()>0)
+        {
+           LOG.log(Level.INFO, "Размер БД студентов {"+foundStudent.size()+"} записей");
+        }   
+        else
+        {
+           LOG.log(Level.WARNING, "БД студентов пустая");
+        }
+        
+        return foundStudent;
+    }        
+    
     
     
     
@@ -189,17 +230,18 @@ public class DatabaseManager
     
     
     @Transactional(value = TxType.REQUIRED)
-    public void deleteStudent(Student student)
+    public Student deleteStudent(Student student)
     {
+        Student removedStudent = null;
         LOG.log(Level.INFO, "Удаление студента из БД {" + student.toString() + "}...");
         try
         {
             Student foundStudent = em.find(Student.class, student.getId());
-            
             if (foundStudent != null)
             {
-                em.remove(foundStudent);
+                em.remove(foundStudent); // Удаление студента
                 LOG.log(Level.INFO, "Удален студент: " + student);
+                removedStudent = student;
             } else
             {
                 LOG.log(Level.WARNING, "Удаление не возможно - в БД не обнаружен cтудент: " + student.toString());
@@ -212,9 +254,9 @@ public class DatabaseManager
             packet.setCommand("Ошибка");
             packet.setBody("Ошибка удаления студента {"+student.toString()+"} , описание ошибки: {"+ex.toString()+"}");
             webSocketServer.sendPacket(packet);
-            
             LOG.log(Level.WARNING, "Ошибка удаления - неверные агрументы: " + ex.toString());
         }
+        return removedStudent;
     }
     
     
