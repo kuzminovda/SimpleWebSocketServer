@@ -3,7 +3,9 @@
   <persistence-unit name="STUDENT_DATABASE_PU" transaction-type="JTA">
     <jta-data-source>postgres</jta-data-source>
     <class>ru.hiik.entitycore.entity.student.Student</class>
+    <class>ru.hiik.entitycore.entity.professor.Professor</class>
     <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
     </properties>
   </persistence-unit>
 </persistence>
