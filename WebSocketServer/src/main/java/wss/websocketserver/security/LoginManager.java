@@ -8,10 +8,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author vaganovdv
- */
+
 @Named
 @SessionScoped
 public class LoginManager implements Serializable 
