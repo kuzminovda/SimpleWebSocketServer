@@ -19,7 +19,7 @@
      
    <listener>
 	<listener-class>
-             ru.hiik.websocketserver.startup.ContextStartUpListener
+             wss.websocketserver.startup.ContextStartUpListener
         </listener-class>
    </listener>
 
