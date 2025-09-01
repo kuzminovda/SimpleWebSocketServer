@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ru.hiik.websocketserver;
+package wss.websocketserver;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
@@ -12,14 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import ru.hiik.entitycore.packet.Packet;
-import ru.hiik.entitycore.entity.student.Student;
-import ru.hiik.websocketserver.database.DatabaseManager;
+import wss.entitycore.Packet;
+import wss.entitycore.Student;
+import wss.websocketserver.database.DatabaseManager;
 
-/**
- *
- * @author vaganovdv
- */
+
 @ApplicationScoped
 public class PacketProcessor
 {

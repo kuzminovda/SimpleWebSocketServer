@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ru.hiik.websocketserver.database;
+package wss.websocketserver.database;
 
 import com.google.gson.Gson;
 import java.lang.reflect.InvocationTargetException;
@@ -21,14 +16,11 @@ import javax.persistence.TransactionRequiredException;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import org.apache.commons.beanutils.BeanUtils;
-import ru.hiik.entitycore.entity.student.Student;
-import ru.hiik.entitycore.packet.Packet;
-import ru.hiik.websocketserver.WebSocketServer;
+import wss.entitycore.Student;
+import wss.entitycore.Packet;
+import wss.websocketserver.WebSocketServer;
 
-/**
- *
- * @author vaganovdv
- */
+
 
 @ApplicationScoped
 public class DatabaseManager

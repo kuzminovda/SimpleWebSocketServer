@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ru.hiik.websocketserver;
+package wss.websocketserver;
 
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -20,14 +15,11 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import ru.hiik.entitycore.entity.student.Student;
-import ru.hiik.entitycore.packet.Packet;
-import ru.hiik.websocketserver.database.DatabaseManager;
+import wss.entitycore.Student;
+import wss.entitycore.Packet;
+import wss.websocketserver.database.DatabaseManager;
 
-/**
- *
- * @author vaganovdv
- */
+
 //  Класс доступен на протяжении всего жизненного цикла приложения
 //   |
 // 

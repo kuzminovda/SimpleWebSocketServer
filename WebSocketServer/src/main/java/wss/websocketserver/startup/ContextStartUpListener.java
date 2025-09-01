@@ -1,21 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ru.hiik.websocketserver.startup;
+package wss.websocketserver.startup;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import ru.hiik.websocketserver.database.DatabaseManager;
+import wss.websocketserver.database.DatabaseManager;
 
-/**
- *
- * @author vaganovdv
- */
+
 public class ContextStartUpListener  implements ServletContextListener
 {
 
